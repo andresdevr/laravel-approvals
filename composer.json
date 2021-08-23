@@ -1,0 +1,24 @@
+{
+    "name": "andredevr/laravel-approvals",
+    "authors": [{
+        "name": "andresdevr",
+        "email": "andres22.dev@gmail.com",
+        "homepage": "https://github.com/andresdevr"
+    }],
+    "description": "This package allows to add to pending model attributes",
+    "license": "MIT",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Andresdevr\\LaravelApprovals\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Andresdevr\\LaravelApprovals\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.20"
+    }
+}
