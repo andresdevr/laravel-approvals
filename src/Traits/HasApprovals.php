@@ -82,6 +82,9 @@ trait HasApprovals
     {
         switch(config('approvals.mode')) {
             case 'database':
+
+                break;
+            case 'model':
                 return $this->{$this->getApprovalKey()};
                 break;
             case 'cache':
