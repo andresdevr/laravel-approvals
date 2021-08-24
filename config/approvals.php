@@ -11,9 +11,9 @@ return [
 
     'cache_tag' => env('APPROVALS_CACHE_TAG', 'approvals'),
 
-    'timestamps' => env('APPROVAL_USE_TIMESTAMP'),
+    'timestamps' => env('APPROVALS_USE_TIMESTAMP'),
 
-    'strict' => env('APPROVALS_STRIC', true),
+    'strict' => env('APPROVALS_STRICT', true),
 
     'use_reason_for_denial' => env('APPROVALS_USE_REASON_FOR_DENIAL', true),
 
