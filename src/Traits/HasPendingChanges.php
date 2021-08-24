@@ -14,6 +14,6 @@ trait HasPendingChanges
      */
 	public function pendingChanges()
     {
-        return $this->morphMany(config('approvals.model'), 'pendingchangeable');
+        return $this->morphMany(config('approvals.model'), 'pendingable');
     }
 }

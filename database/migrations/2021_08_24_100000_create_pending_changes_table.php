@@ -15,6 +15,13 @@ class CreatePendingChangesTable extends Migration
     {
         Schema::create(config('approvals.table_name'), function (Blueprint $table) {
             $table->id();
+	    $table->string('pendingable_type');
+	    $table->string('pendingable_id');
+	    $table->string('attribute');
+	    $table->text('value');
+	    $table->text('reason_for_denial')->nullable();
+	    $table->string('user_id')->nullable();
+	    $table->string('status');
             $table->timestamps();
         });
     }
