@@ -14,12 +14,14 @@ class ModelWasApproved
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
+     /**
      * Create a new event instance.
      *
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param array
      * @return void
      */
-    public function __construct()
+    public function __construct($model, $attributes)
     {
         //
     }

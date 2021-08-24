@@ -4,7 +4,9 @@ namespace Andresdevr\LaravelApprovals\Traits;
 
 use Andresdevr\LaravelApprovals\Exceptions\ApprovalsModeNotSupported;
 use Andresdevr\LaravelApprovals\Exceptions\ColumnDataTypeNotSupported;
+use Andresdevr\LaravelApprovals\Exceptions\ModelNotImplementsMethod;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -18,6 +20,20 @@ trait HasApprovals
      * @var string
      */
     protected $approvalKey;
+
+    /** 
+     * The approval timestamp format
+     * 
+     * @var string
+    */
+    protected $approvalDateFormat;
+
+    /**
+     * The approval strict model
+     * 
+     * @var bool
+     */
+    protected $approvalStrict;
 
     /**
      * Return the approval key to save pending changes
@@ -82,7 +98,9 @@ trait HasApprovals
     {
         switch(config('approvals.mode')) {
             case 'database':
-
+                return method_exists(self::class, 'pendingChanges') ? 
+                    $this->pendingChanges()->get() :
+                    throw new ModelNotImplementsMethod();
                 break;
             case 'model':
                 return $this->{$this->getApprovalKey()};
@@ -116,7 +134,19 @@ trait HasApprovals
      */
     public function setApprovalTimestamp($format)
     {
-        $this->dateFormat = $format;
+        $this->approvalDateFormat = $format;
+
+        return $this;
+    }
+
+    /**
+     * deactivate the strict mode
+     * 
+     * @return self
+     */
+    public function notStrict()
+    {
+        $this->approvalStrict = false;
 
         return $this;
     }
@@ -129,7 +159,28 @@ trait HasApprovals
      */
     public function addToPending(bool $quietly = false)
     {
+        $pendingChanges = $this->getPendingChanges();
+        
+        foreach($this->getDirty() as $attribute => $value)
+        {
+            $pendingChanges[$attribute] = collect([
+                'user_id' => Auth::check() ? Auth::id() : null,
+                'change' => $value,
+                'reason_for_denial' => '',
+                'approved' => 0
+            ]);
+            
+            $this->attributes[$attribute] = $this->getRawOriginal($attribute);
+        }
 
+        $this->savePendingChanges($pendingChanges);
+
+        if(! $quietly)
+        {
+            config('approvals.events.model_request_changes')::dispatch($this);
+        }
+        
+        return $this->save();
     }
 
     /**

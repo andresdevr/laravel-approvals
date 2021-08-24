@@ -42,7 +42,7 @@ return [
     ],
 
     'events' => [
-        'model_request_chages' => ModelRequestChanges::class,
+        'model_request_changes' => ModelRequestChanges::class,
         'model_was_approved' => ModelWasApproved::class,
         'model_was_denied' => ModelWasDenied::class   
     ]
