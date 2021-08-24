@@ -9,7 +9,15 @@ return [
 
     'mode' => env('APPROVALS_MODE', 'database'),
 
+    'cache_tag' => env('APPROVALS_CACHE_TAG', 'approvals'),
+
+    'timestamps' => env('APPROVAL_USE_TIMESTAMP'),
+
     'strict' => env('APPROVALS_STRIC', true),
+
+    'use_reason_for_denial' => env('APPROVALS_USE_REASON_FOR_DENIAL', true),
+
+    'use_user' => env('APPROVALS_USE_USER', true),
 
     'status' => [
         'approved' => env('APPROVALS_APPROVED_STATUS', 1),

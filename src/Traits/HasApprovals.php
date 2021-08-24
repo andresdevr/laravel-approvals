@@ -85,7 +85,8 @@ trait HasApprovals
                 return $this->{$this->getApprovalKey()};
                 break;
             case 'cache':
-                return Cache::get($this->getApprovalKey() . $this->{$this->getKeyName()});
+                return Cache::tags(config('approvals.cache_tag'))
+                            ->get($this->getApprovalKey() . $this->{$this->getKeyName()});
                 break;
             default:
                 throw new ApprovalsModeNotSupported();
@@ -100,6 +101,19 @@ trait HasApprovals
     public function setApprovalKey(string $key) : self
     {
         $this->approvalKey = $key;
+
+        return $this;
+    }
+
+    /**
+     * set the approval timestamp format
+     * 
+     * @param string $format
+     * @return self
+     */
+    public function setApprovalTimestamp($format)
+    {
+        $this->dateFormat = $format;
 
         return $this;
     }
