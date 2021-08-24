@@ -13,7 +13,9 @@ class ApprovalsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        $this->publishes([
+            __DIR__ . '/../config/approvals.php' => config_path('approvals.php'),
+        ], 'approvals-config');
     }
 
     /**
@@ -23,6 +25,6 @@ class ApprovalsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        $this->mergeConfigFrom(__DIR__ . '/../config/approvals.php', 'approvals');
     }
 }
