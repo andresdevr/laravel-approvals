@@ -5,13 +5,16 @@
         "email": "andres22.dev@gmail.com",
         "homepage": "https://github.com/andresdevr"
     }],
-    "description": "This package allows to add to pending model attributes",
+    "description": "This package allows to add to pending Laravel model attributes",
     "license": "MIT",
     "require": {},
     "autoload": {
         "psr-4": {
             "Andresdevr\\LaravelApprovals\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
