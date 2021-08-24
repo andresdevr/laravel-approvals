@@ -7,12 +7,14 @@
 Install this package via [Composer](https://getcomposer.org/)
 
 `
-composer require andresdevr/laravel-approvals to your model
+composer require andresdevr/laravel-approvals
 `
 
 ## Usage
 
-Add the trait `Andresdevr\LaravelApprovals\Traits\HasApprovals` then you can call these methods to add to pending changes
+### Quick start
+
+Add the trait `Andresdevr\LaravelApprovals\Traits\HasApprovals` to your model then you can call these methods to add to pending changes
 
 ```php
 	$foo->addToPending(); //restore all the dirty attributes and saved into pending
@@ -26,6 +28,9 @@ Add the trait `Andresdevr\LaravelApprovals\Traits\HasApprovals` then you can cal
     $foo->denyAll();
 ```
 
+
+### Configuration
+
 ### Timestamps
 by default `andresdevr/laravel-approvals` save the timestamp when was the change requested, the change approved and the the change denied.
 you can change the `APPROVALS_USE_TIMESTAMP` variable in your `.env`.  
@@ -38,10 +43,15 @@ before call `addToPending()`
 
 ```
 
+### User
+
+
+### Events
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](./LICENSE.md)
