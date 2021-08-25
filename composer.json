@@ -18,10 +18,18 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Andresdevr\\LaravelApprovals\\": "tests/"
+            "Andresdevr\\LaravelApprovals\\Tests\\": "tests/"
         }
     },
     "require-dev": {
         "orchestra/testbench": "^6.20"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Andresdevr\\LaravelApprovals\\ApprovalsServiceProvider"
+            ],
+            "aliases": []
+        }
     }
 }

@@ -3,6 +3,7 @@
 namespace Andresdevr\LaravelApprovals\Tests;
 
 use Andresdevr\LaravelApprovals\ApprovalsServiceProvider;
+use Illuminate\Database\Eloquent\Model;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
 
 class TestCase extends TestbenchTestCase
@@ -15,7 +16,7 @@ class TestCase extends TestbenchTestCase
     protected function getPackageProviders($app)
     {
         return [
-		ApprovalsServiceProvider::class
+		    ApprovalsServiceProvider::class
         ];
     }
 }

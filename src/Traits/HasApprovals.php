@@ -47,6 +47,19 @@ trait HasApprovals
             config('approvals.key');
     }
 
+     /**
+     * set the approval key to save pending changes
+     * 
+     * @return self
+     */
+    public function setApprovalKey(string $key) : self
+    {
+        $this->approvalKey = $key;
+
+        return $this;
+    }
+
+
     /**
      * Get the column change data
      * 
@@ -98,8 +111,9 @@ trait HasApprovals
     {
         switch(config('approvals.mode')) {
             case 'database':
-                return method_exists(self::class, 'pendingChanges') ? 
-                    $this->pendingChanges()->get() :
+                if(method_exists(self::class, 'pendingChanges'))
+                    return $this->pendingChanges()->get();
+                else        
                     throw new ModelNotImplementsMethod();
                 break;
             case 'model':
@@ -113,19 +127,7 @@ trait HasApprovals
                 throw new ApprovalsModeNotSupported();
         }
     }
-
-    /**
-     * set the approval key to save pending changes
-     * 
-     * @return self
-     */
-    public function setApprovalKey(string $key) : self
-    {
-        $this->approvalKey = $key;
-
-        return $this;
-    }
-
+  
     /**
      * set the approval timestamp format
      * 
