@@ -2,9 +2,9 @@
 
 namespace Andresdevr\LaravelApprovals\Exceptions;
 
-use Exception;
+use BadMethodCallException;
 
-class ModelNotImplementsMethod extends Exception
+class ModelNotImplementsMethod extends BadMethodCallException
 {
 	//
 }

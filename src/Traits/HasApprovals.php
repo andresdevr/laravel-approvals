@@ -8,6 +8,7 @@ use Andresdevr\LaravelApprovals\Exceptions\ModelNotImplementsMethod;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 /**
  * 
@@ -25,7 +26,7 @@ trait HasApprovals
      * The approval timestamp format
      * 
      * @var string
-    */
+     */
     protected $approvalDateFormat;
 
     /**
@@ -47,7 +48,7 @@ trait HasApprovals
             config('approvals.key');
     }
 
-     /**
+    /**
      * set the approval key to save pending changes
      * 
      * @return self
@@ -63,7 +64,8 @@ trait HasApprovals
     /**
      * Get the column change data
      * 
-     * @return array|\Illuminate\Support\Collection
+     * @param bool $inArray
+     * @return \Illuminate\Support\Collection|array
      */
     public function getPendingChanges($inArray = false)
     {
@@ -105,7 +107,7 @@ trait HasApprovals
     /**
      * check the config to return the data
      * 
-     * @return string|array|mixed
+     * @return string|array|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection mixed
      */
     private function getPendingChangesData()
     {
@@ -179,7 +181,7 @@ trait HasApprovals
 
         if(! $quietly)
         {
-            config('approvals.events.model_request_changes')::dispatch($this);
+            Config::get('approvals.events.model_request_changes')::dispatch($this);
         }
         
         return $this->save();
@@ -197,22 +199,58 @@ trait HasApprovals
 
     /**
      * approve and save change approved
+     * 
+     * @param string attribute
+     * @param bool $quietly
+     * @return bool
      */
-    public function approveChange(string $attribute, $quietly = false)
+    public function approveChange(string $attribute, bool $quietly = false)
     {
 
+
+        if(! $quietly)
+        {
+            Config::get('approvals.events.model_was_approved');
+        }
     }
 
+    /**
+     * approve change without fire any event
+     * 
+     * @param string $attribute
+     * @return bool
+     */
     public function approveChangeQuietly(string $attribute)
     {
         return $this->approveChange($attribute, true);
     }
 
-    public function denyChange(string $attribute, $reasonForDenial = null, $quietly = false)
+    /**
+     * deny a change without modify this model denied
+     * 
+     * @param string $attribute
+     * @param string|mixed $reasonForDenial
+     * @param bool $quietly
+     * @return bool
+     */
+    public function denyChange(string $attribute, $reasonForDenial = null, bool $quietly = false)
     {
 
+
+
+        if(! $quietly)
+        {
+            Config::get('approvals.events.model_was_denied')::dispatch($this);
+        }
     }
 
+    /**
+     * deny a change without changed without fire any event
+     * 
+     * @param string $attribute
+     * @param string|mixed $reasonForDenial
+     * @return bool
+     */
     public function denyChangeQuietly(string $attribute, $reasonForDenial = null)
     {
         return $this->denyChange($attribute, $reasonForDenial);

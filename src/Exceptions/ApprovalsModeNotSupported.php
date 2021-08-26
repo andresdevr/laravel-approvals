@@ -1,10 +1,10 @@
 <?php
 
 namespace Andresdevr\LaravelApprovals\Exceptions;
+;
+use InvalidArgumentException;
 
-use Exception;
-
-class ApprovalsModeNotSupported extends Exception
+class ApprovalsModeNotSupported extends InvalidArgumentException
 {
 	//
 }
