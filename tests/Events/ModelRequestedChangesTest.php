@@ -17,8 +17,20 @@ class ModelRequestedChangesTest extends TestCase
         Event::fake();
 
         TestModel::make()->addToPending();
-        dd(564);
+       
         Event::assertDispatched(ModelRequestChanges::class);
 
+    }
+
+    /**
+     * @test
+     */
+    public function model_request_changes_is_not_emitted_when_changes_are_requested_in_a_model()
+    {
+        Event::fake();
+
+        TestModel::make()->addToPendingQuietly();
+
+        Event::assertNotDispatched(ModelRequestChanges::class);
     }
 }

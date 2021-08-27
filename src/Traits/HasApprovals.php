@@ -69,12 +69,13 @@ trait HasApprovals
      */
     public function getPendingChanges($inArray = false)
     {
-        $pendingChanges = $this->getPendingChanges();
-
+        $pendingChanges = $this->getPendingChangesData();
+        
         if(is_null($pendingChanges))
         {
-            $pendingChanges = '';
+            $pendingChanges = '{}';
         }
+
         if(is_string($pendingChanges))
         {
             if(isJson($pendingChanges))
@@ -164,7 +165,7 @@ trait HasApprovals
     public function addToPending(bool $quietly = false)
     {
         $pendingChanges = $this->getPendingChanges();
-        
+
         foreach($this->getDirty() as $attribute => $value)
         {
             $pendingChanges[$attribute] = collect([
@@ -185,6 +186,16 @@ trait HasApprovals
         }
         
         return $this->save();
+    }
+
+    /**
+     * save the data 
+     * 
+     * @return bool
+     */
+    private function savePendingChanges()
+    {
+        
     }
 
     /**

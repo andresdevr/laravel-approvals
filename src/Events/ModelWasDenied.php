@@ -21,18 +21,9 @@ class ModelWasDenied
      * @param array
      * @return void
      */
-    public function __construct($model, $attributes)
+    public function __construct($model, $attributes = [])
     {
         //
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
 }
