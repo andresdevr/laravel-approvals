@@ -1,5 +1,12 @@
 {
     "name": "andredevr/laravel-approvals",
+    "keywords": [
+        "laravel",
+        "approvals",
+        "models",
+        "pending changes"
+    ],
+    "type": "package",
     "authors": [{
         "name": "andresdevr",
         "email": "andres22.dev@gmail.com",
@@ -7,7 +14,9 @@
     }],
     "description": "This package allows to add to pending Laravel model attributes",
     "license": "MIT",
-    "require": {},
+    "require": {
+        "php": "^7.3|^8.0"
+    },
     "autoload": {
         "psr-4": {
             "Andresdevr\\LaravelApprovals\\": "src/"

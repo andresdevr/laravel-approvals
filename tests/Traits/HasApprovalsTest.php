@@ -1,7 +1,8 @@
 <?php
 
-namespace Andresdevr\LaravelApprovals\Tests;
+namespace Andresdevr\LaravelApprovals\Tests\Traits;
 
+use Andresdevr\LaravelApprovals\Tests\TestCase;
 use Andresdevr\LaravelApprovals\Traits\HasApprovals;
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,7 +34,9 @@ class HasApprovalsTest extends TestCase
 }	
 
 
-
+/**
+ * @codeCoverageIgnore
+ */
 class TestModel extends Model
 {
     use HasApprovals;
