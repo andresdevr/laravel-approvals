@@ -2,9 +2,8 @@
 
 namespace Andresdevr\LaravelApprovals\Tests\Traits;
 
+use Andresdevr\LaravelApprovals\Tests\Models\TestModel;
 use Andresdevr\LaravelApprovals\Tests\TestCase;
-use Andresdevr\LaravelApprovals\Traits\HasApprovals;
-use Illuminate\Database\Eloquent\Model;
 
 class HasApprovalsTest extends TestCase
 {
@@ -32,12 +31,3 @@ class HasApprovalsTest extends TestCase
         $this->assertEquals($key, $model->getApprovalKey());
     }
 }	
-
-
-/**
- * @codeCoverageIgnore
- */
-class TestModel extends Model
-{
-    use HasApprovals;
-}

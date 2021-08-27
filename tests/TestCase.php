@@ -12,6 +12,13 @@ class TestCase extends TestbenchTestCase
     {
         parent::__construct();
     }
+    
+    public function getEnvironmentSetUp($app)
+    {
+        include_once __DIR__ . '/../database/migrations/create_pending_changes_table.php.stub';
+
+        (new \CreatePendingChangesTable)->up();
+    }
 
     protected function getPackageProviders($app)
     {
