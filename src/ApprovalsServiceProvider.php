@@ -2,6 +2,7 @@
 
 namespace Andresdevr\LaravelApprovals;
 
+use Andresdevr\LaravelApprovals\Console\Commands\PublishMigrations;
 use Illuminate\Support\ServiceProvider;
 
 class ApprovalsServiceProvider extends ServiceProvider
@@ -25,6 +26,10 @@ class ApprovalsServiceProvider extends ServiceProvider
                     __DIR__ . '/../database/migrations/create_pending_changes_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_pending_changes_table.php')
                 ], 'approvals-migrations');
             }
+
+            $this->commands([
+                PublishMigrations::class
+            ]);
         }
 
     }
