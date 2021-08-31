@@ -13,4 +13,9 @@ class TestModel extends Model
 {
     use HasApprovals;
     use HasPendingChanges;
+
+    protected $fillable = [
+        'name',
+        'value'
+    ];
 }

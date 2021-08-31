@@ -10,47 +10,49 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
+use function PHPUnit\Framework\isEmpty;
+
 /**
- * 
+ *
  */
 trait HasApprovals
 {
     /**
      * The column/key to save the pending changes
-     * 
+     *
      * @var string
      */
     protected $approvalKey;
 
-    /** 
+    /**
      * The approval timestamp format
-     * 
+     *
      * @var string
      */
     protected $approvalDateFormat;
 
     /**
      * The approval strict model
-     * 
+     *
      * @var bool
      */
     protected $approvalStrict;
 
     /**
      * Return the approval key to save pending changes
-     * 
+     *
      * @return string|mixed
      */
     public function getApprovalKey()
     {
-        return (isset($this->approvalKey) && !is_null($this->approvalKey)) ? 
-            $this->approvalKey : 
+        return (isset($this->approvalKey) && !is_null($this->approvalKey)) ?
+            $this->approvalKey :
             config('approvals.key');
     }
 
     /**
      * set the approval key to save pending changes
-     * 
+     *
      * @return self
      */
     public function setApprovalKey(string $key) : self
@@ -63,14 +65,14 @@ trait HasApprovals
 
     /**
      * Get the column change data
-     * 
+     *
      * @param bool $inArray
      * @return \Illuminate\Support\Collection|array
      */
     public function getPendingChanges($inArray = false)
     {
         $pendingChanges = $this->getPendingChangesData();
-        
+
         if(is_null($pendingChanges))
         {
             $pendingChanges = '{}';
@@ -107,7 +109,7 @@ trait HasApprovals
 
     /**
      * check the config to return the data
-     * 
+     *
      * @return string|array|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection mixed
      */
     private function getPendingChangesData()
@@ -116,7 +118,7 @@ trait HasApprovals
             case 'database':
                 if(method_exists(self::class, 'pendingChanges'))
                     return $this->pendingChanges()->get();
-                else        
+                else
                     throw new ModelNotImplementsMethod();
                 break;
             case 'model':
@@ -130,10 +132,10 @@ trait HasApprovals
                 throw new ApprovalsModeNotSupported();
         }
     }
-  
+
     /**
      * set the approval timestamp format
-     * 
+     *
      * @param string $format
      * @return self
      */
@@ -146,7 +148,7 @@ trait HasApprovals
 
     /**
      * deactivate the strict mode
-     * 
+     *
      * @return self
      */
     public function notStrict()
@@ -158,25 +160,47 @@ trait HasApprovals
 
     /**
      * save the pending changes into the column
-     * 
+     *
      * @param bool $quietly
      * @return bool
      */
     public function addToPending(bool $quietly = false)
     {
+        $this->prepareStrictApproval();
+
         $pendingChanges = $this->getPendingChanges();
 
         foreach($this->getDirty() as $attribute => $value)
         {
-            $pendingChanges[$attribute] = collect([
-                'user_id' => Auth::check() ? Auth::id() : null,
-                'change' => $value,
-                'reason_for_denial' => '',
-                'approved' => 0
-            ]);
-            
+
+            if($this->approvalStrict)
+            {
+                if($this->attributes !== $this->getRawOriginal($attribute))
+                {
+                    $pendingChanges[$attribute] = collect([
+                        'user_id' => Auth::check() ? Auth::id() : null,
+                        'change' => $value,
+                        'reason_for_denial' => '',
+                        'approved' => 0
+                    ]);
+                }
+            }
+            else
+            {
+                if($this->attributes[$attribute] != $this->getRawOriginal($attribute))
+                {
+                    $pendingChanges[$attribute] = collect([
+                        'user_id' => Auth::check() ? Auth::id() : null,
+                        'change' => $value,
+                        'reason_for_denial' => '',
+                        'approved' => 0
+                    ]);
+                }
+            }
+
             $this->attributes[$attribute] = $this->getRawOriginal($attribute);
         }
+
 
         $this->savePendingChanges($pendingChanges);
 
@@ -184,23 +208,49 @@ trait HasApprovals
         {
             Config::get('approvals.events.model_request_changes')::dispatch($this);
         }
-        
+
         return $this->save();
     }
 
     /**
-     * save the data 
-     * 
+     * preoare the variable strict
+     *
+     * @return self
+     */
+    private function prepareStrictApproval()
+    {
+        $this->approvalStrict = isset($this->approvalStrict) ? $this->approvalStrict : config('approvals.strict');
+    }
+
+    /**
+     * save the data
+     *
      * @return bool
      */
-    private function savePendingChanges()
+    private function savePendingChanges($pendingChanges)
     {
-        
+        switch(config('approvals.mode')) {
+            case 'database':
+                if(method_exists(self::class, 'pendingChanges'))
+                    return $this->pendingChanges()->get();
+                else
+                    throw new ModelNotImplementsMethod();
+                break;
+            case 'model':
+                $this->{$this->getApprovalKey()} = json_encode($pendingChanges);
+                break;
+            case 'cache':
+                return Cache::tags(config('approvals.cache_tag'))
+                            ->get($this->getApprovalKey() . $this->{$this->getKeyName()});
+                break;
+            default:
+                throw new ApprovalsModeNotSupported();
+        }
     }
 
     /**
      * save the pending changes into column without fire any event
-     * 
+     *
      * @return bool
      */
     public function addToPendingQuietly()
@@ -210,7 +260,7 @@ trait HasApprovals
 
     /**
      * approve and save change approved
-     * 
+     *
      * @param string attribute
      * @param bool $quietly
      * @return bool
@@ -227,7 +277,7 @@ trait HasApprovals
 
     /**
      * approve change without fire any event
-     * 
+     *
      * @param string $attribute
      * @return bool
      */
@@ -238,7 +288,7 @@ trait HasApprovals
 
     /**
      * deny a change without modify this model denied
-     * 
+     *
      * @param string $attribute
      * @param string|mixed $reasonForDenial
      * @param bool $quietly
@@ -257,7 +307,7 @@ trait HasApprovals
 
     /**
      * deny a change without changed without fire any event
-     * 
+     *
      * @param string $attribute
      * @param string|mixed $reasonForDenial
      * @return bool

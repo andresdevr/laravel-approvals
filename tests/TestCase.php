@@ -3,10 +3,11 @@
 namespace Andresdevr\LaravelApprovals\Tests;
 
 use Andresdevr\LaravelApprovals\ApprovalsServiceProvider;
-use Illuminate\Database\Eloquent\Model;
+use Andresdevr\LaravelApprovals\Tests\Models\TestModel;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
+use PHPUnit\Util\Test;
 
 class TestCase extends TestbenchTestCase
 {
@@ -14,7 +15,7 @@ class TestCase extends TestbenchTestCase
     {
         parent::__construct();
     }
-    
+
     public function getEnvironmentSetUp($app)
     {
         include_once __DIR__ . '/../database/migrations/create_pending_changes_table.php.stub';
@@ -30,9 +31,11 @@ class TestCase extends TestbenchTestCase
             $table->id();
             $table->string('name')->nullable();
             $table->integer('value')->nullable();
+            $table->json('pending_changes')->nullable();
             $table->timestamps();
         });
     }
+
 
     protected function getPackageProviders($app)
     {
