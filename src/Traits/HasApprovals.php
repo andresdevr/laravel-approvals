@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
-use function PHPUnit\Framework\isEmpty;
-
 /**
  *
  */
@@ -181,7 +179,7 @@ trait HasApprovals
                         'user_id' => Auth::check() ? Auth::id() : null,
                         'change' => $value,
                         'reason_for_denial' => '',
-                        'approved' => 0
+                        'approved' => config('approvals.status.pending')
                     ]);
                 }
             }
@@ -193,7 +191,7 @@ trait HasApprovals
                         'user_id' => Auth::check() ? Auth::id() : null,
                         'change' => $value,
                         'reason_for_denial' => '',
-                        'approved' => 0
+                        'approved' => config('approvals.status.pending')
                     ]);
                 }
             }
